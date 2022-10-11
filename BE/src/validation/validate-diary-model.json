@@ -9,7 +9,8 @@
     }
   },
   "required": [
-    "title"
+    "title",
+    "content"
   ],
   "additionalProperties": false
 }

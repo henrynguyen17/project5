@@ -73,11 +73,11 @@ export class EditDiary extends React.PureComponent<
   render() {
     return (
       <div>
-        <h1>Upload new image</h1>
+        <h1>Edit My Diary</h1>
 
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
-            <label>File</label>
+            <label>My Picture</label>
             <input
               type="file"
               accept="image/*"
@@ -85,8 +85,28 @@ export class EditDiary extends React.PureComponent<
               onChange={this.handleFileChange}
             />
           </Form.Field>
-
           {this.renderButton()}
+
+          <Form.Field>
+            <label>My Title</label>
+            <input
+              type="text"
+              placeholder="test1"
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>My Content</label>
+            <textarea
+              name="Text1"
+              placeholder="test2"
+            />
+          </Form.Field>
+          <Button
+            color = "teal"
+            type="submit"
+          >
+            Save me
+          </Button>
         </Form>
       </div>
     )

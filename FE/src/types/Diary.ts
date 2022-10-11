@@ -1,8 +1,7 @@
 export interface Diary {
   diaryId: string
   createdAt: string
-  name: string
-  dueDate: string
-  done: boolean
+  title: string
+  content: string
   attachmentUrl?: string
 }

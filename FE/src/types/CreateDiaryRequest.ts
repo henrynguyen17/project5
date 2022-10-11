@@ -1,4 +1,5 @@
 export interface CreateDiaryRequest {
-  name: string
-  dueDate: string
+  title: string
+  content: string
+  attachmentUrl?: string
 }

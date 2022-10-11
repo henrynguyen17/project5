@@ -61,6 +61,9 @@ export default class Auth {
     this.accessToken = authResult.accessToken;
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
+    localStorage.setItem('expiresAt', this.expiresAt);
+    localStorage.setItem('accessToken', this.accessToken);
+    localStorage.setItem('idToken', this.idToken);
 
     // navigate to the home route
     this.history.replace('/');
@@ -84,11 +87,14 @@ export default class Auth {
     this.idToken = null;
     this.expiresAt = 0;
 
-    // Remove isLoggedIn flag from localStorage
+    // Remove keys flag from localStorage
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('expiresAt');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('idToken');
 
     this.auth0.logout({
-      return_to: window.location.origin
+      returnto: window.location.origin
     });
 
     // navigate to the home route
@@ -96,9 +102,10 @@ export default class Auth {
   }
 
   isAuthenticated() {
-    // Check whether the current time is past the
-    // access token's expiry time
-    let expiresAt = this.expiresAt;
-    return new Date().getTime() < expiresAt;
+    this.expiresAt = localStorage.getItem('expiresAt');
+    this.accessToken = localStorage.getItem('accessToken');
+    this.idToken = localStorage.getItem('idToken');
+
+    return new Date().getTime() < this.expiresAt;
   }
 }

@@ -1,5 +1,5 @@
 export interface UpdateDiaryRequest {
-  name: string
-  dueDate: string
-  done: boolean
+  title: string
+  content: string
+  attachmentUrl?: string
 }

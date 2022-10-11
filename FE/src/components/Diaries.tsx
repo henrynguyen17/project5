@@ -1,4 +1,3 @@
-import dateFormat from 'dateformat'
 import { History } from 'history'
 import update from 'immutability-helper'
 import * as React from 'react'
@@ -25,19 +24,21 @@ interface DiariesProps {
 
 interface DiariesState {
   diaries: Diary[]
-  newDiaryName: string
+  newDiaryTitle: string
+  newDiaryContent: string
   loadingDiaries: boolean
 }
 
 export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
   state: DiariesState = {
     diaries: [],
-    newDiaryName: '',
+    newDiaryTitle: '',
+    newDiaryContent: '',
     loadingDiaries: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newDiaryName: event.target.value })
+    this.setState({ newDiaryTitle: event.target.value })
   }
 
   onEditButtonClick = (diaryId: string) => {
@@ -46,14 +47,13 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
 
   onDiaryCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
       const newDiary = await createDiary(this.props.auth.getIdToken(), {
-        name: this.state.newDiaryName,
-        dueDate
+        title: this.state.newDiaryTitle,
+        content: this.state.newDiaryContent,
       })
       this.setState({
         diaries: [...this.state.diaries, newDiary],
-        newDiaryName: ''
+        newDiaryTitle: ''
       })
     } catch {
       alert('Diary creation failed')
@@ -65,24 +65,6 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
       await deleteDiary(this.props.auth.getIdToken(), diaryId)
       this.setState({
         diaries: this.state.diaries.filter(diary => diary.diaryId !== diaryId)
-      })
-    } catch {
-      alert('Diary deletion failed')
-    }
-  }
-
-  onDiaryCheck = async (pos: number) => {
-    try {
-      const diary = this.state.diaries[pos]
-      await patchDiary(this.props.auth.getIdToken(), diary.diaryId, {
-        name: diary.name,
-        dueDate: diary.dueDate,
-        done: !diary.done
-      })
-      this.setState({
-        diaries: update(this.state.diaries, {
-          [pos]: { done: { $set: !diary.done } }
-        })
       })
     } catch {
       alert('Diary deletion failed')
@@ -104,7 +86,7 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">MY DIARIES</Header>
 
         {this.renderCreateDiaryInput()}
 
@@ -122,7 +104,7 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New task',
+              content: 'New Diary',
               onClick: this.onDiaryCreate
             }}
             fluid
@@ -162,17 +144,11 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
         {this.state.diaries.map((diary, pos) => {
           return (
             <Grid.Row key={diary.diaryId}>
-              <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onDiaryCheck(pos)}
-                  checked={diary.done}
-                />
-              </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {diary.name}
+                {diary.title}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {diary.dueDate}
+                {diary.createdAt}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
@@ -205,10 +181,4 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
     )
   }
 
-  calculateDueDate(): string {
-    const date = new Date()
-    date.setDate(date.getDate() + 7)
-
-    return dateFormat(date, 'yyyy-mm-dd') as string
-  }
 }
