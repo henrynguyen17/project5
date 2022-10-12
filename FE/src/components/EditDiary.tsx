@@ -3,6 +3,9 @@ import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getUploadUrl, uploadFile } from '../api/diaries-api'
 
+import { patchDiary } from '../api/diaries-api'
+import { UpdateDiaryRequest } from '../types/UpdateDiaryRequest'
+
 enum UploadState {
   NoUpload,
   FetchingPresignedUrl,
@@ -21,6 +24,8 @@ interface EditDiaryProps {
 interface EditDiaryState {
   file: any
   uploadState: UploadState
+  editTitle: any
+  editContent: any
 }
 
 export class EditDiary extends React.PureComponent<
@@ -29,7 +34,9 @@ export class EditDiary extends React.PureComponent<
 > {
   state: EditDiaryState = {
     file: undefined,
-    uploadState: UploadState.NoUpload
+    uploadState: UploadState.NoUpload,
+    editTitle: '',
+    editContent: ''
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +77,18 @@ export class EditDiary extends React.PureComponent<
     })
   }
 
+  onDiaryUpdate = async (diaryId: string) => {
+    try {
+      await patchDiary(this.props.auth.getIdToken(),
+      diaryId, {
+        title: this.state.editTitle,
+        content: this.state.editContent,
+      })
+    } catch {
+      alert('Diary update failed')
+    }
+  }
+
   render() {
     return (
       <div>
@@ -102,6 +121,7 @@ export class EditDiary extends React.PureComponent<
             />
           </Form.Field>
           <Button
+            //onClick={this.onDiaryUpdate('diaryId')}
             color = "teal"
             type="submit"
           >
