@@ -105,7 +105,8 @@ export class EditDiary extends React.PureComponent<
             />
           </Form.Field>
           {this.renderButton()}
-
+        </Form>
+        <Form>
           <Form.Field>
             <label>My Title</label>
             <input
@@ -121,9 +122,8 @@ export class EditDiary extends React.PureComponent<
             />
           </Form.Field>
           <Button
-            //onClick={this.onDiaryUpdate('diaryId')}
+            onClick={() => this.onDiaryUpdate(this.props.match.params.diaryId)}
             color = "teal"
-            type="submit"
           >
             Save me
           </Button>

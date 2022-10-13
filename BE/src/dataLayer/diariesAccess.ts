@@ -3,7 +3,6 @@ import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { DiaryItem } from '../models/DiaryItem'
 import { DiaryUpdate } from '../models/DiaryUpdate';
-//const AWSXRay = require('aws-xray-sdk')
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
@@ -53,7 +52,7 @@ export class DiariesAccess {
                 diaryId: diaryId
             },
             UpdateExpression: 'set #title = :title, #content = :content, #attachmentUrl = :attachmentUrl',
-            ExpressionAttributeNames: { '#name': 'name', '#done': 'done',  '#attachmentUrl': 'attachmentUrl'},
+            ExpressionAttributeNames: { '#title': 'title', '#content': 'content', '#attachmentUrl': 'attachmentUrl'},
             ExpressionAttributeValues: {
                 ':title': diaryUpdate.title,
                 ':content': diaryUpdate.content,
