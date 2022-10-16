@@ -1,12 +1,9 @@
 import 'source-map-support/register'
-
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
-
 import { createAttachmentPresignedUrl } from '../../businessLogic/diaries'
 import { getUserId } from '../utils'
-
 import { createLogger } from '../../utils/logger'
 
 const logger = createLogger("generateUploadUrl");
@@ -15,11 +12,20 @@ export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     logger.info("## GENERATE UPLOAD URL ##");
     try {
-      const diaryId = event.pathParameters.diaryId
       
-      // DIARY: Return a presigned URL to upload a file for a DIARY item with the provided id
-      const user = getUserId(event);
-      const url = await createAttachmentPresignedUrl(diaryId, user);
+      // just verify if the user is existing in system
+      var user = getUserId(event);
+      if (user === null)
+      {
+        logger.error("## USER NOT FOUND ##")
+        return {
+        statusCode: 500,
+        body: JSON.stringify({
+          "message": "System errors: USER NOT FOUND"
+        })}
+      }
+
+      const url = await createAttachmentPresignedUrl();
       logger.info("## GENERATE UPLOAD URL SUCCESSFULLY ##");
       return {
         statusCode: 201,

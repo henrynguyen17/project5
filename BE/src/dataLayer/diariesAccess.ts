@@ -25,6 +25,33 @@ export class DiariesAccess {
         return items as DiaryItem[];
     }
 
+    async getDiaryByIdForUser(userId: String, diaryId: string): Promise<DiaryItem> {
+        const result = await this.docClient.get({
+            TableName: this.diaryTable,
+            Key: {
+                diaryId,
+                userId
+            }
+          }).promise()
+      
+        const item = result.Item
+        return item as DiaryItem;
+    }
+
+    async searchDiariesForUser(userId: String, searchText: String): Promise<DiaryItem[]> {
+        const result = await this.docClient.query({
+            TableName: this.diaryTable,
+            KeyConditionExpression: 'userId = :userId',
+            FilterExpression: 'contains(title, :searchText)',
+            ExpressionAttributeValues: {
+                ':userId': userId,
+                ':searchText': searchText
+            }
+        }).promise()
+        const items = result.Items
+        return items as DiaryItem[];
+    }
+
     async createDiaryForUser(diaryItem: DiaryItem): Promise<DiaryItem> {
         await this.docClient.put({
             TableName: this.diaryTable,
@@ -56,27 +83,27 @@ export class DiariesAccess {
             ExpressionAttributeValues: {
                 ':title': diaryUpdate.title,
                 ':content': diaryUpdate.content,
-                ':attachmentUrl': diaryUpdate.attachmentUrl,
+                ':attachmentUrl': diaryUpdate.attachmentUrl
             },
             ReturnValues: "UPDATED_NEW"
         }
         return await this.docClient.update(params).promise();
     }
 
-    async updateDiariesImage(imageUrl: String, userId: String, diaryIds: String) {
-        const params = {
-            TableName: this.diaryTable,
-            Key: {
-                userId: userId,
-                diaryId: diaryIds
-            },
-            UpdateExpression: 'set attachmentUrl = :r',
-            ExpressionAttributeValues: {
-                ':r': imageUrl,
-            }
-        }
-        return await this.docClient.update(params).promise();
-    }
+    // async updateDiariesImage(imageUrl: String, userId: String, diaryIds: String) {
+    //     const params = {
+    //         TableName: this.diaryTable,
+    //         Key: {
+    //             userId: userId,
+    //             diaryId: diaryIds
+    //         },
+    //         UpdateExpression: 'set attachmentUrl = :r',
+    //         ExpressionAttributeValues: {
+    //             ':r': imageUrl,
+    //         }
+    //     }
+    //     return await this.docClient.update(params).promise();
+    // }
 }
 
 function createDynamoDBClient() {

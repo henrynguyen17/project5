@@ -5,7 +5,15 @@
   "properties": {
     "title": {
       "type": "string",
+      "minLength": 10,
+      "uniqueItems": true
+    },
+    "content": {
+      "type": "string",
       "minLength": 10
+    },
+    "attachmentUrl":{
+      "type": "string"
     }
   },
   "required": [
