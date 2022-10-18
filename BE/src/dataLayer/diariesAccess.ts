@@ -42,7 +42,7 @@ export class DiariesAccess {
         const result = await this.docClient.query({
             TableName: this.diaryTable,
             KeyConditionExpression: 'userId = :userId',
-            FilterExpression: 'contains(title, :searchText)',
+            FilterExpression: 'contains (title, :searchText)',
             ExpressionAttributeValues: {
                 ':userId': userId,
                 ':searchText': searchText

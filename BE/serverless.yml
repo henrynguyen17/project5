@@ -72,7 +72,7 @@ functions:
     events:
       - http:
           method: get
-          path: diaries
+          path: diaries/search/{searchText}
           cors: true
           authorizer: Auth
     iamRoleStatementsInherit: true

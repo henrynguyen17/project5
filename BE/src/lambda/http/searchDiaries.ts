@@ -17,8 +17,8 @@ export const handler = middy(
     try {
       const userId = getUserId(event)
       const searchText = event.pathParameters.searchText
+      logger.info("My search text: " + searchText)
 
-      logger.info("## SEARCH USER ID ##")
       const diaries = await searchDiariesForUser(userId, searchText);
 
       logger.info("## DIARIES By USER ID AND SEARCH SUCCESSFULLY ##")
