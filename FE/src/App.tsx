@@ -4,6 +4,7 @@ import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
 import { EditDiary } from './components/EditDiary'
+import { CreateDiary } from './components/CreateDiary'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Diaries } from './components/Diaries'
@@ -93,6 +94,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <Diaries {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/diaries/create"
+          exact
+          render={props => {
+            return <CreateDiary {...props} auth={this.props.auth} />
           }}
         />
 

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getUploadUrl, uploadFile } from '../api/diaries-api'
-import { patchDiary } from '../api/diaries-api'
+import { createDiary } from '../api/diaries-api'
 
 enum UploadState {
   NoUpload,
@@ -10,33 +10,32 @@ enum UploadState {
   UploadingFile,
 }
 
-interface EditDiaryProps {
+interface CreateDiaryProps {
   match: {
     params: {
-      diaryId: string
     }
   }
   auth: Auth
 }
 
-interface EditDiaryState {
+interface CreateDiaryState {
   file: any
   uploadState: UploadState
-  editTitle: any
-  editContent: any
-  editDiaryImageUrl: any
+  newDiaryTitle: any
+  newDiaryContent: any
+  newDiaryImageUrl: any
 }
 
-export class EditDiary extends React.PureComponent<
-  EditDiaryProps,
-  EditDiaryState
+export class CreateDiary extends React.PureComponent<
+  CreateDiaryProps,
+  CreateDiaryState
 > {
-  state: EditDiaryState = {
+  state: CreateDiaryState = {
     file: undefined,
     uploadState: UploadState.NoUpload,
-    editTitle: '',
-    editContent: '',
-    editDiaryImageUrl: ''
+    newDiaryTitle: '',
+    newDiaryContent: '',
+    newDiaryImageUrl: ''
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +47,7 @@ export class EditDiary extends React.PureComponent<
     })
   }
 
-  handleUploadWithUpdate = async (event: React.SyntheticEvent) => {
+  handleUpload = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     try {
@@ -59,14 +58,12 @@ export class EditDiary extends React.PureComponent<
 
       this.setUploadState(UploadState.FetchingPresignedUrl)
       const uploadUrl = await getUploadUrl(this.props.auth.getIdToken())
-      this.state.editDiaryImageUrl = uploadUrl
+      this.state.newDiaryImageUrl = uploadUrl
 
       this.setUploadState(UploadState.UploadingFile)
       await uploadFile(uploadUrl, this.state.file)
 
       alert('File was uploaded!')
-
-      this.onDiaryUpdate(this.props.match.params.diaryId)
     } catch (e) {
       alert('Could not upload a file: ' + (e as Error).message)
     } finally {
@@ -80,28 +77,24 @@ export class EditDiary extends React.PureComponent<
     })
   }
 
-  onDiaryUpdate = async (diaryId: string) => {
+  onDiaryCreate = async () => {
     try {
-      await patchDiary(this.props.auth.getIdToken(),
-      diaryId, {
-        title: this.state.editTitle,
-        content: this.state.editContent,
-        attachmentUrl: this.state.editDiaryImageUrl
+      await createDiary(this.props.auth.getIdToken(), {
+        title: this.state.newDiaryTitle,
+        content: this.state.newDiaryContent,
+        attachmentUrl: this.state.newDiaryImageUrl
       })
     } catch {
-      alert('Diary update failed')
-    }
-    finally{
-      
+      alert('Diary creation failed')
     }
   }
 
   render() {
     return (
       <div>
-        <h1>Edit My Diary</h1>
+        <h1>Create My Diary</h1>
 
-        <Form>
+        <Form onSubmit={this.handleUpload}>
           <Form.Field>
             <label>My Picture</label>
             <input
@@ -129,10 +122,10 @@ export class EditDiary extends React.PureComponent<
             />
           </Form.Field>
           <Button
-            onClick={() => this.handleUploadWithUpdate}
+            onClick={this.onDiaryCreate}
             color = "teal"
           >
-            Save me
+            Create me
           </Button>
         </Form>
       </div>
@@ -147,8 +140,9 @@ export class EditDiary extends React.PureComponent<
         {this.state.uploadState === UploadState.UploadingFile && <p>Uploading file</p>}
         <Button
           loading={this.state.uploadState !== UploadState.NoUpload}
+          type="submit"
         >
-          Progress
+          Upload
         </Button>
       </div>
     )

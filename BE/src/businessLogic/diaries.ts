@@ -47,6 +47,14 @@ export async function deleteDiary(diaryId: string, userId: string) {
 }
 
 export async function updateDiary(updateDiaryRequest: UpdateDiaryRequest, diaryId: string, userId: string) {
+    const oldDiary = await diariesAccess.getDiaryByIdForUser(userId, diaryId);
+    const oldImageUrl = oldDiary.attachmentUrl;
+    const oldImageId = oldImageUrl.substring(oldImageUrl.lastIndexOf('/') + 1);
+
+    if (oldImageId !== updateDiaryRequest.attachmentUrl){
+        attachmentsAccess.removeAttachment(oldImageId);
+    }
+
     return await diariesAccess.updateDiaryForUser(updateDiaryRequest, userId, diaryId)
 }
 

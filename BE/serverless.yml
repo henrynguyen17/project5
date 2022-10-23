@@ -145,7 +145,7 @@ functions:
     events:
       - http:
           method: post
-          path: diaries/{diaryId}/attachment
+          path: diaries/attachment
           cors: true
           authorizer: Auth
     iamRoleStatementsInherit: true

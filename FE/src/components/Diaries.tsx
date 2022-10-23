@@ -1,9 +1,7 @@
 import { History } from 'history'
-import update from 'immutability-helper'
 import * as React from 'react'
 import {
   Button,
-  Checkbox,
   Divider,
   Grid,
   Header,
@@ -13,7 +11,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createDiary, deleteDiary, getDiaries, patchDiary } from '../api/diaries-api'
+import { deleteDiary, getDiaries, searchDiaries } from '../api/diaries-api'
 import Auth from '../auth/Auth'
 import { Diary } from '../types/Diary'
 
@@ -24,39 +22,44 @@ interface DiariesProps {
 
 interface DiariesState {
   diaries: Diary[]
+  searchText: string
   newDiaryTitle: string
-  newDiaryContent: string
   loadingDiaries: boolean
 }
 
 export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
   state: DiariesState = {
     diaries: [],
+    searchText: '',
     newDiaryTitle: '',
-    newDiaryContent: '',
     loadingDiaries: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newDiaryTitle: event.target.value })
+    this.setState({ searchText: event.target.value })
   }
 
   onEditButtonClick = (diaryId: string) => {
     this.props.history.push(`/diaries/${diaryId}/edit`)
   }
 
-  onDiaryCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onCreateButtonClick = () => {
+    this.props.history.push(`/diaries/create`)
+  }
+
+  onDiarySearch = async () => {
     try {
-      const newDiary = await createDiary(this.props.auth.getIdToken(), {
-        title: this.state.newDiaryTitle,
-        content: this.state.newDiaryContent,
-      })
+      if (this.state.searchText === ''){
+        this.componentDidMount()
+        return
+      }
+      const searchedDiaries = await searchDiaries(this.props.auth.getIdToken(), this.state.searchText)
+      
       this.setState({
-        diaries: [...this.state.diaries, newDiary],
-        newDiaryTitle: ''
+        diaries: searchedDiaries
       })
     } catch {
-      alert('Diary creation failed')
+      alert('Diary search failed')
     }
   }
 
@@ -88,28 +91,35 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
       <div>
         <Header as="h1">MY DIARIES</Header>
 
-        {this.renderCreateDiaryInput()}
-
+        {this.renderDiaryInputs()}
         {this.renderDiaries()}
       </div>
     )
   }
 
-  renderCreateDiaryInput() {
+  renderDiaryInputs() {
     return (
       <Grid.Row>
+        <Button
+           icon='add'
+           floated='right'
+           color="yellow"
+           content="New Diary"
+           onClick={this.onCreateButtonClick}
+          >
+          </Button>
         <Grid.Column width={16}>
           <Input
             action={{
               color: 'teal',
               labelPosition: 'left',
-              icon: 'add',
-              content: 'New Diary',
-              onClick: this.onDiaryCreate
+              icon: 'search',
+              content: 'Search My Diary',
+              onClick: this.onDiarySearch
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Your text to search"
             onChange={this.handleNameChange}
           />
         </Grid.Column>
@@ -141,16 +151,35 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
   renderDiariesList() {
     return (
       <Grid padded>
+        <Grid.Row>
+          <Grid.Column as="h3" width={3}>Image</Grid.Column>
+          <Grid.Column as="h3" width={4}>Title</Grid.Column>
+          <Grid.Column as="h3" width={4}>Content</Grid.Column>
+          <Grid.Column as="h3" width={3}>Date Created</Grid.Column>
+          <Grid.Column as="h3" width={2}>Actions</Grid.Column>
+          <Grid.Column width={16}>
+                <Divider />
+              </Grid.Column>
+        </Grid.Row>
+        
         {this.state.diaries.map((diary, pos) => {
           return (
             <Grid.Row key={diary.diaryId}>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={3} verticalAlign="middle">
+                {diary.attachmentUrl && (
+                  <Image src={diary.attachmentUrl} size="small" wrapped />
+                )}
+              </Grid.Column>
+              <Grid.Column width={4} verticalAlign="middle">
                 {diary.title}
               </Grid.Column>
-              <Grid.Column width={3} floated="right">
+              <Grid.Column width={4} verticalAlign="middle">
+                {diary.content}
+              </Grid.Column>
+              <Grid.Column width={3} verticalAlign="middle">
                 {diary.createdAt}
               </Grid.Column>
-              <Grid.Column width={1} floated="right">
+              <Grid.Column width={1} verticalAlign="middle">
                 <Button
                   icon
                   color="blue"
@@ -159,7 +188,7 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
                   <Icon name="pencil" />
                 </Button>
               </Grid.Column>
-              <Grid.Column width={1} floated="right">
+              <Grid.Column width={1} verticalAlign="middle">
                 <Button
                   icon
                   color="red"
@@ -168,9 +197,7 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {diary.attachmentUrl && (
-                <Image src={diary.attachmentUrl} size="small" wrapped />
-              )}
+              
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>

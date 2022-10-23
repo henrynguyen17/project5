@@ -17,6 +17,19 @@ export async function getDiaries(idToken: string): Promise<Diary[]> {
   return response.data.items
 }
 
+export async function searchDiaries(idToken: string, searchText: string): Promise<Diary[]> {
+  console.log('Fetching diaries')
+
+  const response = await Axios.get(`${apiEndpoint}/diaries/search/${searchText}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
+  })
+  console.log('Search Diaries:', response.data)
+  return response.data.items
+}
+
 export async function createDiary(
   idToken: string,
   newDiary: CreateDiaryRequest
@@ -56,10 +69,9 @@ export async function deleteDiary(
 }
 
 export async function getUploadUrl(
-  idToken: string,
-  diaryId: string
+  idToken: string
 ): Promise<string> {
-  const response = await Axios.post(`${apiEndpoint}/diaries/${diaryId}/attachment`, '', {
+  const response = await Axios.post(`${apiEndpoint}/diaries/attachment`, '', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
