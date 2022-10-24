@@ -47,6 +47,14 @@ export class CreateDiary extends React.PureComponent<
     })
   }
 
+  handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newDiaryTitle: event.target.value })
+  }
+
+  handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newDiaryContent: event.target.value })
+  }
+
   handleUpload = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
@@ -58,10 +66,13 @@ export class CreateDiary extends React.PureComponent<
 
       this.setUploadState(UploadState.FetchingPresignedUrl)
       const uploadUrl = await getUploadUrl(this.props.auth.getIdToken())
-      this.state.newDiaryImageUrl = uploadUrl
 
       this.setUploadState(UploadState.UploadingFile)
       await uploadFile(uploadUrl, this.state.file)
+
+      this.setState({
+        newDiaryImageUrl: uploadUrl
+      })
 
       alert('File was uploaded!')
     } catch (e) {
@@ -94,7 +105,7 @@ export class CreateDiary extends React.PureComponent<
       <div>
         <h1>Create My Diary</h1>
 
-        <Form onSubmit={this.handleUpload}>
+        <Form onSubmit={this.handleUpload} >
           <Form.Field>
             <label>My Picture</label>
             <input
@@ -111,14 +122,16 @@ export class CreateDiary extends React.PureComponent<
             <label>My Title</label>
             <input
               type="text"
-              placeholder="test1"
+              placeholder="your title"
+              onChange={this.handleTitleChange}
             />
           </Form.Field>
           <Form.Field>
             <label>My Content</label>
-            <textarea
-              name="Text1"
-              placeholder="test2"
+            <input
+              type="text"
+              placeholder="your content"
+              onChange={this.handleContentChange}
             />
           </Form.Field>
           <Button
@@ -141,6 +154,7 @@ export class CreateDiary extends React.PureComponent<
         <Button
           loading={this.state.uploadState !== UploadState.NoUpload}
           type="submit"
+          color="facebook"
         >
           Upload
         </Button>

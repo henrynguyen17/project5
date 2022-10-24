@@ -66,6 +66,22 @@ functions:
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DIARIES_TABLE}
 
+  GetDiaryById:
+    handler: src/lambda/http/getDiaryById.handler
+    events:
+      - http:
+          method: get
+          path: diaries/{diaryId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DIARIES_TABLE}
+
   
   SearchDiaries:
     handler: src/lambda/http/searchDiaries.handler
@@ -96,7 +112,7 @@ functions:
           authorizer: Auth
           request:
             schema:
-              application/json: ${file(validation/validate-diary-model.json)}
+              application/json: ${file(src/validation/validate-diary-model.json)}
     iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow

@@ -12,6 +12,10 @@ export const getDiariesForUser = async (userId: String): Promise<DiaryItem[]> =>
     return await diariesAccess.getDiariesForUser(userId);
 }
 
+export const getDiaryByIdForUser = async (userId: String, diaryId: String): Promise<DiaryItem> => {
+    return await diariesAccess.getDiaryByIdForUser(userId, diaryId);
+}
+
 export const searchDiariesForUser = async (userId: String, searchText: string): Promise<DiaryItem[]> => {
     return await diariesAccess.searchDiariesForUser(userId, searchText);
 }
@@ -22,7 +26,6 @@ export async function createDiary(
 ): Promise<DiaryItem> {
 
     const diaryId = uuid.v4()
-    const attachmentUrl = await attachmentsAccess.getAttachmentUrl(createDiaryRequest.attachmentUrl);
 
     return await diariesAccess.createDiaryForUser({
         userId: userId,
@@ -30,7 +33,7 @@ export async function createDiary(
         createdAt: new Date().toISOString(),
         title: createDiaryRequest.title,
         content: createDiaryRequest.content,
-        attachmentUrl: attachmentUrl
+        attachmentUrl: createDiaryRequest.attachmentUrl
     })
 }
 
@@ -40,7 +43,9 @@ export async function deleteDiary(diaryId: string, userId: string) {
     const imageId = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
 
     // clean old attachment
-    attachmentsAccess.removeAttachment(imageId);
+    if (imageId !== ''){
+        attachmentsAccess.removeAttachment(imageId);
+    }
 
     // remove item
     return await diariesAccess.deleteDiaryForUser(diaryId, userId)
@@ -51,7 +56,7 @@ export async function updateDiary(updateDiaryRequest: UpdateDiaryRequest, diaryI
     const oldImageUrl = oldDiary.attachmentUrl;
     const oldImageId = oldImageUrl.substring(oldImageUrl.lastIndexOf('/') + 1);
 
-    if (oldImageId !== updateDiaryRequest.attachmentUrl){
+    if (oldImageId !== '' && oldImageId !== updateDiaryRequest.attachmentUrl){
         attachmentsAccess.removeAttachment(oldImageId);
     }
 

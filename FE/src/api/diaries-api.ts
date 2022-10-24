@@ -17,6 +17,17 @@ export async function getDiaries(idToken: string): Promise<Diary[]> {
   return response.data.items
 }
 
+export async function getDiaryById(idToken: string, diaryId: string): Promise<Diary> {
+  const response = await Axios.get(`${apiEndpoint}/diaries/${diaryId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
+  })
+  console.log('Diary: ', response.data)
+  return response.data.item
+}
+
 export async function searchDiaries(idToken: string, searchText: string): Promise<Diary[]> {
   console.log('Fetching diaries')
 

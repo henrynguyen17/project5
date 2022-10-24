@@ -25,7 +25,7 @@ export class DiariesAccess {
         return items as DiaryItem[];
     }
 
-    async getDiaryByIdForUser(userId: String, diaryId: string): Promise<DiaryItem> {
+    async getDiaryByIdForUser(userId: String, diaryId: String): Promise<DiaryItem> {
         const result = await this.docClient.get({
             TableName: this.diaryTable,
             Key: {
