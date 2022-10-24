@@ -56,7 +56,7 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
       const searchedDiaries = await searchDiaries(this.props.auth.getIdToken(), this.state.searchText)
       
       this.setState({
-        diaries: searchedDiaries
+        diaries: searchedDiaries.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
       })
     } catch {
       alert('Diary search failed')
@@ -162,7 +162,7 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
               </Grid.Column>
         </Grid.Row>
         
-        {this.state.diaries.map((diary, pos) => {
+        {this.state.diaries.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1).map((diary) => {
           return (
             <Grid.Row key={diary.diaryId}>
               <Grid.Column width={3} verticalAlign="middle">
