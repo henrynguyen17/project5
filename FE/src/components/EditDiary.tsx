@@ -3,7 +3,8 @@ import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getDiaryById, getUploadUrl, uploadFile } from '../api/diaries-api'
 import { patchDiary } from '../api/diaries-api'
-import { Diary } from '../types/Diary'
+import { History } from 'history'
+import { Image } from 'semantic-ui-react'
 
 enum UploadState {
   NoUpload,
@@ -18,6 +19,7 @@ interface EditDiaryProps {
     }
   }
   auth: Auth
+  history: History
 }
 
 interface EditDiaryState {
@@ -26,7 +28,6 @@ interface EditDiaryState {
   editTitle: any
   editContent: any
   editDiaryImageUrl: any
-  diary: Diary
 }
 
 export class EditDiary extends React.PureComponent<
@@ -36,10 +37,9 @@ export class EditDiary extends React.PureComponent<
   state: EditDiaryState = {
     file: undefined,
     uploadState: UploadState.NoUpload,
-    editTitle: '',
-    editContent: '',
-    editDiaryImageUrl: '',
-    diary: { diaryId: '', title: '', content: '', createdAt: '', attachmentUrl: ''}
+    editTitle: '$onload',
+    editContent: '$onload',
+    editDiaryImageUrl: '$onload'
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,12 +61,17 @@ export class EditDiary extends React.PureComponent<
 
   handleUpload = async (event: React.SyntheticEvent) => {
     event.preventDefault()
+    const currentImageUrl = this.state.editDiaryImageUrl
 
     try {
       if (!this.state.file) {
         alert('File should be selected')
         return
       }
+
+      this.setState({
+        editDiaryImageUrl: "$onload"
+      })
 
       this.setUploadState(UploadState.FetchingPresignedUrl)
       const uploadUrl = await getUploadUrl(this.props.auth.getIdToken())
@@ -80,6 +85,9 @@ export class EditDiary extends React.PureComponent<
 
       alert('File was uploaded!')
     } catch (e) {
+      this.setState({
+        editDiaryImageUrl: currentImageUrl
+      })
       alert('Could not upload a file: ' + (e as Error).message)
     } finally {
       this.setUploadState(UploadState.NoUpload)
@@ -93,6 +101,16 @@ export class EditDiary extends React.PureComponent<
   }
 
   onDiaryUpdate = async (diaryId: string) => {
+    if (this.state.editTitle < 10){
+      alert("title is too short")
+      return
+    }
+
+    if (this.state.editContent < 10){
+      alert("content is too short")
+      return
+    }
+
     try {
       await patchDiary(this.props.auth.getIdToken(),
       diaryId, {
@@ -100,11 +118,12 @@ export class EditDiary extends React.PureComponent<
         content: this.state.editContent,
         attachmentUrl: this.state.editDiaryImageUrl
       })
+
+      alert('Diary is updated successfully')
+
+      this.props.history.push(`/`)
     } catch {
       alert('Diary update failed')
-    }
-    finally{
-      
     }
   }
 
@@ -112,13 +131,6 @@ export class EditDiary extends React.PureComponent<
     try {
       const getDiary = await getDiaryById(this.props.auth.getIdToken(), this.props.match.params.diaryId)
       this.setState({
-        diary: {
-          diaryId: getDiary.diaryId,
-          title: getDiary.title,
-          content: getDiary.content,
-          createdAt: getDiary.createdAt,
-          attachmentUrl: getDiary.attachmentUrl
-        },
         editDiaryImageUrl: getDiary.attachmentUrl,
         editTitle: getDiary.title,
         editContent: getDiary.content
@@ -133,7 +145,7 @@ export class EditDiary extends React.PureComponent<
       <div>
         <h1>Edit My Diary</h1>
 
-        <Form>
+        <Form onSubmit={this.handleUpload} >
           <Form.Field>
             <label>My Picture</label>
             <input
@@ -144,15 +156,20 @@ export class EditDiary extends React.PureComponent<
             />
           </Form.Field>
           {this.renderButton()}
+          <Form loading={this.state.editDiaryImageUrl === '$onload'}>
+            {this.state.editDiaryImageUrl && (
+                    <Image src={this.state.editDiaryImageUrl} size="small" wrapped />
+                  )}
+          </Form>
         </Form>
-        <Form>
+        <Form loading={this.state.editTitle === '$onload'}>
           <Form.Field>
             <label>My Title</label>
             <input
               type="text"
               placeholder="your title"
               onChange={this.handleTitleChange}
-              value={this.state.diary.title}
+              value={this.state.editTitle}
             />
           </Form.Field>
           <Form.Field>
@@ -161,7 +178,7 @@ export class EditDiary extends React.PureComponent<
               type="text"
               placeholder="your content"
               onChange={this.handleContentChange}
-              value={this.state.diary.content}
+              value={this.state.editContent}
             />
           </Form.Field>
           <Button

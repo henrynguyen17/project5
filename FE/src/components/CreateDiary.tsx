@@ -3,6 +3,8 @@ import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getUploadUrl, uploadFile } from '../api/diaries-api'
 import { createDiary } from '../api/diaries-api'
+import { History } from 'history'
+import { Image } from 'semantic-ui-react'
 
 enum UploadState {
   NoUpload,
@@ -16,6 +18,7 @@ interface CreateDiaryProps {
     }
   }
   auth: Auth
+  history: History
 }
 
 interface CreateDiaryState {
@@ -89,13 +92,26 @@ export class CreateDiary extends React.PureComponent<
   }
 
   onDiaryCreate = async () => {
+    if (this.state.newDiaryTitle < 10){
+      alert("title is too short")
+      return
+    }
+
+    if (this.state.newDiaryContent < 10){
+      alert("content is too short")
+      return
+    }
+
     try {
       await createDiary(this.props.auth.getIdToken(), {
         title: this.state.newDiaryTitle,
         content: this.state.newDiaryContent,
         attachmentUrl: this.state.newDiaryImageUrl
       })
-    } catch {
+
+      alert('Diary is created successfully')
+      this.props.history.push(`/`)
+    } catch (e){
       alert('Diary creation failed')
     }
   }
@@ -116,6 +132,9 @@ export class CreateDiary extends React.PureComponent<
             />
           </Form.Field>
           {this.renderButton()}
+          {this.state.newDiaryImageUrl && (
+                  <Image src={this.state.newDiaryImageUrl} size="small" wrapped />
+                )}
         </Form>
         <Form>
           <Form.Field>

@@ -19,14 +19,13 @@ export const handler = middy(
       const diaryId = event.pathParameters.diaryId
       const updatedDiary: UpdateDiaryRequest = JSON.parse(event.body)
       
-      // Update a DIARY item with the provided id using values in the "updatedDiary" object
       const user = getUserId(event);
       await updateDiary(updatedDiary,diaryId,user);
       logger.info("## UPDATE DIARY SUCCESSFULLY ##");
       return {
         statusCode: 201,
         body: JSON.stringify({
-          "item": "Diary had been update!"
+          "item": "Diary had been updated!"
         })
       }
     } catch (error) {
