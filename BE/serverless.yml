@@ -171,6 +171,21 @@ functions:
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DIARIES_TABLE}
 
+  RemoveAttachment:
+    handler: src/lambda/http/removeAttachment.handler
+    events:
+      - http:
+          method: delete
+          path: diaries/attachment/{attachmentId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DIARIES_TABLE}
+
 resources:
   Resources:
     RestApi:

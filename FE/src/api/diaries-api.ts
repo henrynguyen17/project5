@@ -94,3 +94,15 @@ export async function getUploadUrl(
 export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void> {
   await Axios.put(uploadUrl, file)
 }
+
+export async function removeAttachment(
+  idToken: string,
+  attachmentId: string
+): Promise<void> {
+  await Axios.delete(`${apiEndpoint}/diaries/attachment/${attachmentId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  })
+}

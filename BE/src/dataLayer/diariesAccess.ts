@@ -89,21 +89,6 @@ export class DiariesAccess {
         }
         return await this.docClient.update(params).promise();
     }
-
-    // async updateDiariesImage(imageUrl: String, userId: String, diaryIds: String) {
-    //     const params = {
-    //         TableName: this.diaryTable,
-    //         Key: {
-    //             userId: userId,
-    //             diaryId: diaryIds
-    //         },
-    //         UpdateExpression: 'set attachmentUrl = :r',
-    //         ExpressionAttributeValues: {
-    //             ':r': imageUrl,
-    //         }
-    //     }
-    //     return await this.docClient.update(params).promise();
-    // }
 }
 
 function createDynamoDBClient() {

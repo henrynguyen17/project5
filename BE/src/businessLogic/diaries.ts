@@ -66,3 +66,7 @@ export async function updateDiary(updateDiaryRequest: UpdateDiaryRequest, diaryI
 export async function createAttachmentPresignedUrl(){
     return await attachmentsAccess.uploadImage();
 }
+
+export async function removeAttachment(attachmentId: string){
+    return await attachmentsAccess.removeAttachment(attachmentId);
+}
