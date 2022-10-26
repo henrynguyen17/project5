@@ -87,7 +87,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"123 Water flowers\",\n\t\"content\": \"123 test 1234\"\n}"
+							"raw": "{\n\t\"title\": \"44 Water flowers\",\n\t\"content\": \"44 test 1234\",\n    \"attachmentUrl\": \"444\"\n}"
 						},
 						"url": {
 							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/diaries",
@@ -221,6 +221,42 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete attachment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/diaries/attachment/172f30ea-8c52-4262-ab64-271320fb92ef/delete",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"diaries",
+								"attachment",
+								"172f30ea-8c52-4262-ab64-271320fb92ef",
+								"delete"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -273,7 +309,7 @@
 		},
 		{
 			"key": "authToken",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjFCcUwydWlHVkhNMnNOTTdYQ2xqWSJ9.eyJpc3MiOiJodHRwczovL2Rldi1uazVrem4tbi51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg3NjQ2MzgwMDc5NjYzMjMyODciLCJhdWQiOiJ4aWRLb3Y0YVlpUlBvdm9Eemw2TGFKbm1yaHlSUEFPZyIsImlhdCI6MTY2NjYyNjM2NiwiZXhwIjoxNjY2NjYyMzY2LCJhdF9oYXNoIjoicU1qWnVkZndwejBjRVZyZ3NVMTR1ZyIsInNpZCI6IjVMRGVBRE41bXd2aVdVclFRN24tUHdTNGVwWi02ektEIiwibm9uY2UiOiJxTX5DY3I0TGpKa08yb0xZcnhpU2dGbHJ5bEQ3N0hSaCJ9.XOqmgnY83mnK6i3CUsDowibvhB9XQFBtLAlyxjGCXepAUiJ5jtKoM9PfffnHzwm5XQHCMJLZFTCYN2Fk4B1EQdgahbRG2ZsxJzulojbehFJpwDC_hvNcmQ-wpX5_6go3_p5JxDUZl5meeoLRfwrQu53UHBWQw8K3Ngh__BTvOi5uZhiKpVm2aph-o571kHEdnJzrWTxAO3JdKQ97Cgk0Qg5zwRvo3uMoK77lB-8iDmrltn8HuGiglBI8__bwZNWcPQfQcQdBJ-ZwPXpAJJBUBSW0FhbOmb3DYhnwP9d9jxIyW9Xmqn1n9srWZ3mXPDmEAbg9AgziQi9sX8DV-K7Mow",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjFCcUwydWlHVkhNMnNOTTdYQ2xqWSJ9.eyJpc3MiOiJodHRwczovL2Rldi1uazVrem4tbi51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg3NjQ2MzgwMDc5NjYzMjMyODciLCJhdWQiOiJ4aWRLb3Y0YVlpUlBvdm9Eemw2TGFKbm1yaHlSUEFPZyIsImlhdCI6MTY2Njc2NTgwNiwiZXhwIjoxNjY2ODAxODA2LCJhdF9oYXNoIjoiQlBPcHBON0E0M3hnbVNuVVRreWlZdyIsInNpZCI6IjVMRGVBRE41bXd2aVdVclFRN24tUHdTNGVwWi02ektEIiwibm9uY2UiOiJkbnJkR1MycUtran5mU3N-OW0wWDdDQmx6OFRaT01qNCJ9.apzl4mhwkdLJSG5xmeIGNA-jUH_s9s0v_Xz7yK5z8eAFUaCifZIE5cF3RUDkMEPny25qM81PiJ8FGLd2vJnUwJ5h8Mig4X6xBBhbGqVD7fHvxiQHwxz9zouQ4RgHAIz7pxshPhwAq69gxtn3tnCJ5dw1UhjroQ5VWKsUAmWePD4rOePs2tBBARxqj8pTjwpxugUF50ry46aPUCNdL5lzuaRn2Fv9qisYhfKxW7eMm_CrZ99nT8j3P4JakHg1ElKjbnEF2AT7emMHJmOMs5AthiB9cU7tNgVx4DoQdCl3DbLEC3Q6p2nuO3svijAp3YUuo0XKwKi9vROWLgMQZHrwwg",
 			"type": "string"
 		}
 	]
