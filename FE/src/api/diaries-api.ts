@@ -99,7 +99,7 @@ export async function removeAttachment(
   idToken: string,
   attachmentId: string
 ): Promise<void> {
-  await Axios.delete(`${apiEndpoint}/diaries/attachment/${attachmentId}`, {
+  await Axios.post(`${apiEndpoint}/diaries/attachment/${attachmentId}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`

@@ -24,7 +24,7 @@ export const handler = middy(
       return {
         statusCode: 201,
         body: JSON.stringify({
-          "message": "Diary had been deleted!"
+          "message": "Diary has been deleted!"
         })
       }
     } catch (error) {
@@ -32,7 +32,7 @@ export const handler = middy(
       return {
         statusCode: 500,
         body: JSON.stringify({
-          "message": "System errors"
+          "message": "System errors: " + error.message
         })
       }
     }

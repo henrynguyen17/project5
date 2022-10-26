@@ -38,14 +38,14 @@ export async function createDiary(
 }
 
 export async function deleteDiary(diaryId: string, userId: string) {
-    const diary = await diariesAccess.getDiaryByIdForUser(userId, diaryId);
-    const imageUrl = diary.attachmentUrl;
-    const imageId = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+    // const diary = await diariesAccess.getDiaryByIdForUser(userId, diaryId);
+    // const imageUrl = diary.attachmentUrl;
+    // const imageId = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
 
-    // clean old attachment
-    if (imageId !== ''){
-        attachmentsAccess.removeAttachment(imageId);
-    }
+    // // clean old attachment
+    // if (imageId !== ''){
+    //     attachmentsAccess.removeAttachment(imageId);
+    // }
 
     // remove item
     return await diariesAccess.deleteDiaryForUser(diaryId, userId)

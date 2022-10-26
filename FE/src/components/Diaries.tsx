@@ -69,6 +69,7 @@ export class Diaries extends React.PureComponent<DiariesProps, DiariesState> {
       this.setState({
         diaries: this.state.diaries.filter(diary => diary.diaryId !== diaryId)
       })
+      alert('Diary is deleted successfully')
     } catch {
       alert('Diary deletion failed')
     }

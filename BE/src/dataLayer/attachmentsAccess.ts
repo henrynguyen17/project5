@@ -35,8 +35,8 @@ export class AttachmentsAccess {
         };
     
         try {
-          await s3.headObject(params).promise();
-          logger.info("File found in S3...!");
+          // await s3.headObject(params).promise();
+          // logger.info("File found in S3...!");
     
           try {
             await s3.deleteObject(params).promise();

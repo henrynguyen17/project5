@@ -26,12 +26,12 @@ export const handler = middy(
         })}
       }
 
-      const url = await removeAttachment(attachmentId);
+      await removeAttachment(attachmentId);
       logger.info("## REMOVE ATTACHMENT SUCCESSFULLY ##");
       return {
         statusCode: 201,
         body: JSON.stringify({
-          uploadUrl: url
+          "message": "Attachment had been deleted!"
         })
       }
     } catch (error) {

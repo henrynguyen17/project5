@@ -176,7 +176,7 @@ functions:
     events:
       - http:
           method: post
-          path: diaries/attachment/{attachmentId}/delete
+          path: diaries/attachment/{attachmentId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
