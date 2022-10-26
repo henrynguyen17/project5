@@ -175,16 +175,16 @@ functions:
     handler: src/lambda/http/removeAttachment.handler
     events:
       - http:
-          method: delete
-          path: diaries/attachment/{attachmentId}
+          method: post
+          path: diaries/attachment/{attachmentId}/delete
           cors: true
           authorizer: Auth
-    iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:DeleteItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DIARIES_TABLE}
+          - s3:DeleteObject
+          - s3:GetObject
+        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
 
 resources:
   Resources:
@@ -231,7 +231,6 @@ resources:
             Projection:
               ProjectionType: ALL # What attributes will be copied to an index
 
-    # Do not forget to add the CorsConfiguration propoerty
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -244,27 +243,13 @@ resources:
               AllowedMethods:
                 - GET
                 - PUT
+                - POST
+                - DELETE
+                - HEAD
               AllowedOrigins:
                 - '*'
-              ExposedHeaders:
-                - Date
-              Id: myCORSRuleId1
               MaxAge: 3600
-            - AllowedHeaders:
-                - x-amz-*
-              AllowedMethods:
-                - PUT
-                - DELETE
-              AllowedOrigins:
-                - 'http://localhost:3000/*'
-              ExposedHeaders:
-                - Connection
-                - Server
-                - Date
-              Id: myCORSRuleId2
-              MaxAge: 1800
 
-    # For cross referencing the name of the bucket, use "!Ref AttachmentsBucket"
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:

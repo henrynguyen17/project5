@@ -92,16 +92,6 @@ export class CreateDiary extends React.PureComponent<
   }
 
   onDiaryCreate = async () => {
-    if (this.state.newDiaryTitle < 10){
-      alert("title is too short")
-      return
-    }
-
-    if (this.state.newDiaryContent < 10){
-      alert("content is too short")
-      return
-    }
-
     try {
       await createDiary(this.props.auth.getIdToken(), {
         title: this.state.newDiaryTitle,

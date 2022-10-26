@@ -101,16 +101,6 @@ export class EditDiary extends React.PureComponent<
   }
 
   onDiaryUpdate = async (diaryId: string) => {
-    if (this.state.editTitle < 10){
-      alert("title is too short")
-      return
-    }
-
-    if (this.state.editContent < 10){
-      alert("content is too short")
-      return
-    }
-
     try {
       await patchDiary(this.props.auth.getIdToken(),
       diaryId, {
