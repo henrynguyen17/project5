@@ -2,7 +2,7 @@
 
 Dear Mentor,
 
-I has been spending the huge time for my company projects but I did do my best for this capstone project, hopefully it can make you feel satisfied.
+I have been spending the huge time for my company projects but I did do my best for this capstone project, hopefully it can make you feel satisfied.
 
 Here are my BE functions:
 
